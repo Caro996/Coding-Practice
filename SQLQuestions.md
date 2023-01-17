@@ -1,4 +1,5 @@
-**Q1. 2nd highest salary**
+**Q1. 2nd highest salary**      
+   
 +-------------+------+
 | Column Name | Type |
 +-------------+------+
@@ -13,18 +14,22 @@ Write an SQL query to report the second highest salary from the Employee table. 
 Solution 1:
 Find the max after kicking out the max --> 2nd highest
 
-`SELECT IFNULL(NULL, max(salary)) as SecondHighestSalary
+```
+SELECT IFNULL(NULL, max(salary)) as SecondHighestSalary
 FROM Employee
-WHERE salary <> (SELECT max(salary) FROM Employee)`
+WHERE salary <> (SELECT max(salary) FROM Employee)
+```
 
 Solution 2:
 A more general solution:
 
-`CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
+```
+CREATE FUNCTION getNthHighestSalary(N INT) RETURNS INT
 BEGIN
 SET N = N-1;
   RETURN (
       SELECT DISTINCT(salary) from Employee order by salary DESC
       LIMIT 1 OFFSET N      
   );
-END`
+END
+```
