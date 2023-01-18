@@ -66,3 +66,47 @@ for dense_rank(), the rank numbers will be consecutive.
 cannot write "partiton by id" here cuz this means all scores will be categorized by each own id which is unique and this makes the ranking non-sense.
 
 ---
+**Q3. Consecutive Numbers**  
+```   
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| num         | varchar |
++-------------+---------+
+id is the primary key for this table.
+id is an autoincrement column.  
+```
+Write an SQL query to find all numbers that appear at least three times consecutively.
+
+Return the result table in any order.
+
+The query result format is in the following example.
+
+Solution1:
+```
+SELECT DISTINCT num0 as ConsecutiveNums
+FROM 
+(
+    SELECT t0.id,t0.num as num0,
+    t1.num as num1,
+    t2.num as num2
+    FROM Logs t0
+    LEFT JOIN Logs t1 ON t0.id +1 = t1.id
+    LEFT JOIN Logs t2 ON t0.id +2 = t2.id
+)ta
+WHERE num0 = num1
+AND num1 = num2
+```
+Solution2:
+More general solution
+```
+select distinct num as consecutiveNums 
+from (select num,sum(c) over (order by id) as flag from 
+(select id, num, case when LAG(Num) OVER (order by id)- Num = 0 then 0 else 1 end as c
+from logs) a
+) b
+group by num,flag
+having count(*) >=3   --(you can change 3 to any number)
+```
+---
